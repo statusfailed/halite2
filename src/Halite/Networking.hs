@@ -6,7 +6,7 @@ import Halite.Types
 import Data.Attoparsec.Text
 import Control.Monad
 
----- Useful combinators
+---------- Useful combinators
 
 lineOf :: Parser a -> Parser a
 lineOf p = do
@@ -33,7 +33,7 @@ list p = do
     True  -> return (n, [])
     False -> skipSpace >> listOfN n p >>= \r -> return (n, r)
 
----- Actual parsers
+---------- Actual parsers
 
 -- | Parse an identifie
 parseUid :: Parser (Id t)
@@ -113,9 +113,6 @@ parseOwner = do
   case owned of
     0 -> return Nothing
     _ -> return $ Just (Id owner)
-
--- (plid, x, y, hp, r, docking, current, remaining,
--- owned, owner, num_docked_ships, *remainder) = tokens
 
 planet :: Parser Planet
 planet = do
