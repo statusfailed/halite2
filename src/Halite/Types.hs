@@ -35,24 +35,25 @@ data Player = Player
 data Ship = Ship
   { uid :: Id ShipID
   , pos :: (Double, Double)
-  , health :: Double
+  , health :: Integer
   -- velocity is deprecated
   , dockingInfo :: DockingInfo
+  , weaponCooldown :: Integer
 -- NOTE: lack of docked_planet - this is part of DockingStatus
   } deriving(Eq, Ord, Read, Show)
 
 data DockingInfo
   = Undocked
-  | Docking   (Id PlanetID)
+  | Docking   (Id PlanetID) Integer -- ^ Planet ID and docking progress
   | Docked    (Id PlanetID)
-  | Undocking (Id PlanetID)
+  | Undocking (Id PlanetID) Integer -- ^ Planet ID and undocking progress
   deriving(Eq, Ord, Read, Show)
 
 data Planet = Planet
   { uid :: Id PlanetID
   , pos :: (Double, Double)
   , health :: Integer
-  , radius :: Integer
+  , radius :: Double
   , dockingSpots :: Integer
   , currentProduction :: Integer
   , remainingProduction :: Integer

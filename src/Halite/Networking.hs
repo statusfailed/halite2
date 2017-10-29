@@ -1,74 +1,139 @@
-{-# LANGUAGE RecordWildcards        #-}
+{-# LANGUAGE RecordWildCards        #-}
 {-# LANGUAGE DuplicateRecordFields  #-}
 module Halite.Networking where
 
 import Halite.Types
+import Data.Attoparsec.Text
+import Control.Monad
 
+---- Useful combinators
+
+lineOf :: Parser a -> Parser a
+lineOf p = do
+  r <- p
+  endOfLine
+  return r
+
+-- | Parse N 'sep'-separated parsers
+sepByN :: Integer -> Parser () -> Parser a -> Parser [a]
+sepByN n sep p
+  | n <= 0 = return []
+  | otherwise = liftM2 (:) p rest
+    where rest = replicateM (fromInteger $ n - 1) (sep >> p)
+
+listOfN :: Integer -> Parser a -> Parser [a]
+listOfN n p
+  | n <= 0    = return []
+  | otherwise = sepByN n skipSpace p
+
+list :: Parser a -> Parser (Integer, [a])
+list p = do
+  n <- decimal
+  case n <= 0 of
+    True  -> return (n, [])
+    False -> skipSpace >> listOfN n p >>= \r -> return (n, r)
+
+---- Actual parsers
+
+-- | Parse an identifie
 parseUid :: Parser (Id t)
-parseUid = Id <$> integer
+parseUid = Id <$> decimal
 
-init :: Parser Init
-init = liftM4 Init
-  uid
-  integer
-  integer
-  parseGameMap
+-- | Parse player ID, then width and height on own line.
+parseHeader :: Parser (Id PlayerID, Integer, Integer)
+parseHeader = do
+  playerId <- lineOf parseUid
+  (width, height) <- lineOf $ do
+    w  <- decimal
+    skipSpace
+    h  <- decimal
+    return (w, h)
+  return (playerId, width, height)
 
-gameMap :: Parser GameMap
-gameMap = do
-  numPlayers <- integer
-  players <- replicateM numPlayers player
-  numPlanets <- integer
-  planets <- replicateM numPlanets planet
+parseInit :: Parser Init
+parseInit = do
+  (playerId, width, height) <- parseHeader
+  gameMap <- lineOf (skipSpace >> parseGameMap)
+  return Init{..}
+
+parseGameMap :: Parser GameMap
+parseGameMap = do
+  (numPlayers, players) <- list player 
+  skipSpace
+  (numPlanets, planets) <- list planet
   return GameMap{..}
 
 player :: Parser Player
 player = do
   uid <- parseUid
-  numShips <- integer
-  ships <- replicateM numShips ship
+  skipSpace
+  (numShips, ships) <- list ship
   return Player{..}
 
 parseDockingInfo :: Parser DockingInfo
 parseDockingInfo = do
-  status <- integer
-  pid    <- integer
-  case status of
-    0 -> Undocked
-    1 -> Docking   (Id pid)
-    2 -> Docked    (Id pid)
-    3 -> Undocking (Id pid)
+  status <- decimal
+  skipSpace
+  pid <- decimal
+  skipSpace
+  progress <- decimal
+  return $ case status of
+             0 -> Undocked
+             1 -> Docking   (Id pid) progress
+             2 -> Docked    (Id pid)
+             3 -> Undocking (Id pid) progress
 
 parsePos :: Parser (Double, Double)
-parsePos = liftM2 (,) double double
+parsePos = do
+  x <- double
+  skipSpace
+  y <- double
+  return (x, y)  
 
 ship :: Parser Ship
 ship = do
   uid <- parseUid
+  skipSpace
   pos <- parsePos
-  health <- integer
-  _ <- replicateM 2 double -- velocity (deprecated)
+  skipSpace
+  health <- decimal
+  skipSpace
+  _ <- parsePos -- velocity (deprecated)
+  skipSpace
   dockingInfo <- parseDockingInfo
+  skipSpace
+  weaponCooldown <- decimal
   return Ship{..}
 
-parseOwner :: Maybe (Id PlayerID)
+parseOwner :: Parser (Maybe (Id PlayerID))
 parseOwner = do
-  owned <- integer
-  owner <- integer
+  owned <- decimal :: Parser Integer
+  skipSpace
+  owner <- decimal
   case owned of
-    0 -> Nothing
-    _ -> Just (Id owner)
+    0 -> return Nothing
+    _ -> return $ Just (Id owner)
+
+-- (plid, x, y, hp, r, docking, current, remaining,
+-- owned, owner, num_docked_ships, *remainder) = tokens
 
 planet :: Parser Planet
 planet = do
   uid <- parseUid
+  skipSpace
   pos <- parsePos
-  health <- integer
-  radius <- integer
-  dockingSpots <- integer
-  currentProduction <- integer
-  remainingProduction <- integer
+  skipSpace
+  health <- decimal
+  skipSpace
+  radius <- double
+  skipSpace
+  dockingSpots <- decimal
+  skipSpace
+  currentProduction <- decimal
+  skipSpace
+  remainingProduction <- decimal
+  skipSpace
   owner <- parseOwner
-  numDockedShips <- integer
-  dockedShips <- replicateM numDockedShips integer
+  skipSpace
+  (numDockedShips, dockedShips) <- list parseUid
   return Planet{..}
