@@ -6,6 +6,8 @@ import Halite.Types
 import Data.Attoparsec.Text
 import Control.Monad
 
+import Numeric.LinearAlgebra (Vector(..), vector)
+
 ---------- Useful combinators
 
 lineOf :: Parser a -> Parser a
@@ -83,12 +85,12 @@ parseDockingInfo = do
              2 -> Docked    (Id pid)
              3 -> Undocking (Id pid) progress
 
-parsePos :: Parser (Double, Double)
+parsePos :: Parser Position
 parsePos = do
   x <- double
   skipSpace
   y <- double
-  return (x, y)  
+  return $ vector [x, y]
 
 ship :: Parser Ship
 ship = do

@@ -2,6 +2,7 @@
 module Halite.Types where
 
 import Numeric.LinearAlgebra
+import Numeric.LinearAlgebra.Data
 
 -- | A general ID type
 data Id t = Id { unId :: Integer }
@@ -11,6 +12,8 @@ data Id t = Id { unId :: Integer }
 data PlayerID
 data ShipID
 data PlanetID
+
+type Position = Vector Double
 
 data Init = Init
   { playerId :: Id PlayerID
@@ -34,7 +37,7 @@ data Player = Player
 
 data Ship = Ship
   { uid :: Id ShipID
-  , pos :: (Double, Double)
+  , pos :: Position
   , health :: Integer
   -- velocity is deprecated
   , dockingInfo :: DockingInfo
@@ -51,7 +54,7 @@ data DockingInfo
 
 data Planet = Planet
   { uid :: Id PlanetID
-  , pos :: (Double, Double)
+  , pos :: Position
   , health :: Integer
   , radius :: Double
   , dockingSpots :: Integer
