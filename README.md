@@ -9,12 +9,17 @@ Currently done:
   - [x] Parsers
   - [x] Tests
   - [x] Commands
-- [ ] Utility functions
+- [ ] Utility/Geometry functions
   - [ ] entity typeclass?
+  - [x] lineIntersectsCircle
   - [x] entity.calculateDistanceBetween(entity)
   - [ ] ship.dock(planetId) ???
   - [ ] ship.navigate(position, speed)
   - [ ] ship.closestPointTo(entity)
+  - [ ] tests
+- [ ] Test framework
+  - [ ] Switch to Tasty
+  - [ ] Add QuickCheck tests for geometry
 - [ ] Framework
   - [ ] StateT Writer (old commands overwritten by new)
 - [ ] Port of Nuka

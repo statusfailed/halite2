@@ -13,7 +13,7 @@ data PlayerID
 data ShipID
 data PlanetID
 
-type Position = Vector Double
+type Point = Vector Double
 
 data Init = Init
   { playerId :: Id PlayerID
@@ -37,7 +37,7 @@ data Player = Player
 
 data Ship = Ship
   { uid :: Id ShipID
-  , pos :: Position
+  , pos :: Point
   , health :: Integer
   -- velocity is deprecated
   , dockingInfo :: DockingInfo
@@ -54,7 +54,7 @@ data DockingInfo
 
 data Planet = Planet
   { uid :: Id PlanetID
-  , pos :: Position
+  , pos :: Point
   , health :: Integer
   , radius :: Double
   , dockingSpots :: Integer

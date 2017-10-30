@@ -85,7 +85,7 @@ parseDockingInfo = do
              2 -> Docked    (Id pid)
              3 -> Undocking (Id pid) progress
 
-parsePos :: Parser Position
+parsePos :: Parser Point
 parsePos = do
   x <- double
   skipSpace
