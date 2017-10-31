@@ -8,6 +8,13 @@ data Line = Line Point Point
 
 data Circle = Circle Point Double
 
+-- | Distance between two points (2-norm)
+--
+-- python:
+-- return math.sqrt((target.x - self.x) ** 2 + (target.y - self.y) ** 2)
+distance :: Point -> Point -> Double
+distance x y = norm_2 (y - x)
+
 -- | Does a 'Line' intersect a 'Circle' in Euclidean space?
 -- https://stackoverflow.com/a/1079478
 lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)

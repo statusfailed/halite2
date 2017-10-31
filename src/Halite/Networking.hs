@@ -54,22 +54,22 @@ parseHeader = do
 
 parseInit :: Parser Init
 parseInit = do
-  (playerId, width, height) <- parseHeader
-  gameMap <- lineOf (skipSpace >> parseGameMap)
+  (_playerId, _width, _height) <- parseHeader
+  _gameMap <- lineOf (skipSpace >> parseGameMap)
   return Init{..}
 
 parseGameMap :: Parser GameMap
 parseGameMap = do
-  (numPlayers, players) <- list player 
+  (_numPlayers, _players) <- list player 
   skipSpace
-  (numPlanets, planets) <- list planet
+  (_numPlanets, _planets) <- list planet
   return GameMap{..}
 
 player :: Parser Player
 player = do
-  uid <- parseUid
+  _uid <- parseUid
   skipSpace
-  (numShips, ships) <- list ship
+  (_numShips, _ships) <- list ship
   return Player{..}
 
 parseDockingInfo :: Parser DockingInfo
@@ -94,17 +94,17 @@ parsePos = do
 
 ship :: Parser Ship
 ship = do
-  uid <- parseUid
+  _uid <- parseUid
   skipSpace
-  pos <- parsePos
+  _pos <- parsePos
   skipSpace
-  health <- decimal
+  _health <- decimal
   skipSpace
   _ <- parsePos -- velocity (deprecated)
   skipSpace
-  dockingInfo <- parseDockingInfo
+  _dockingInfo <- parseDockingInfo
   skipSpace
-  weaponCooldown <- decimal
+  _weaponCooldown <- decimal
   return Ship{..}
 
 parseOwner :: Parser (Maybe (Id PlayerID))
@@ -118,21 +118,21 @@ parseOwner = do
 
 planet :: Parser Planet
 planet = do
-  uid <- parseUid
+  _uid <- parseUid
   skipSpace
-  pos <- parsePos
+  _pos <- parsePos
   skipSpace
-  health <- decimal
+  _health <- decimal
   skipSpace
-  radius <- double
+  _radius <- double
   skipSpace
-  dockingSpots <- decimal
+  _dockingSpots <- decimal
   skipSpace
-  currentProduction <- decimal
+  _currentProduction <- decimal
   skipSpace
-  remainingProduction <- decimal
+  _remainingProduction <- decimal
   skipSpace
-  owner <- parseOwner
+  _owner <- parseOwner
   skipSpace
-  (numDockedShips, dockedShips) <- list parseUid
+  (_numDockedShips, _dockedShips) <- list parseUid
   return Planet{..}
