@@ -4,22 +4,25 @@ A bot and client library for [halite.io](https://www.halite.io).
 
 Currently done:
 
+- [ ] Port of Nuka
 - [x] Types
 - [x] Networking
   - [x] Parsers
   - [x] Tests
   - [x] Commands
-- [ ] Utility/Geometry functions
-  - [ ] entity typeclass?
-  - [x] lineIntersectsCircle
-  - [x] entity.calculateDistanceBetween(entity)
-  - [ ] ship.dock(planetId) ???
-  - [ ] ship.navigate(position, speed)
+- [ ] Geometry
+  - [x] `calculateDistanceBetween :: Entity -> Entity -> Double`
+  - [x] `lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)`
+  - [ ] `lineSegmentIntersectsCircle`
+  - [ ] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
+- [ ] Game functions
   - [ ] ship.closestPointTo(entity)
+  - [ ] ship.navigate(position, speed)
   - [ ] tests
-- [ ] Test framework
-  - [ ] Switch to Tasty
-  - [ ] Add QuickCheck tests for geometry
 - [ ] Framework
   - [ ] StateT Writer (old commands overwritten by new)
-- [ ] Port of Nuka
+  - [ ] ship.dock(planetId) ???
+  - [ ] entity typeclass?
+- [ ] Test framework
+  - [x] Switch to Tasty
+  - [ ] Add SmallCheck tests for geometry
