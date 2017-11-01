@@ -9,20 +9,45 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Numeric.LinearAlgebra (vector)
 
--- | Utility function for constructing tests. It's a bit fugly, sorry!
+-- | Utility functions for constructing tests. It's a bit fugly, sorry!
 testLineIntersectsCircle :: Bool -> Point -> Point -> Point -> Double -> Assertion
 testLineIntersectsCircle expected x0 x1 c r =
   assertEqual "intersects" expected . maybe False (const True) $
     lineIntersectsCircle (Line x0 x1) (Circle c r)
 
-tests = testGroup "Geometry Tests"
-  [ testCase "lineIntersectsCircle 1" $
-      testLineIntersectsCircle True  (vector [0,0]) (vector [2,2]) (vector [1,1]) 0.5
+{-testSegmentIntersectsCircle :: Bool -> Point -> Point -> Point -> Double -> Assertion-}
+{-testSegmentIntersectsCircle expected x0 x1 c r =-}
+  {-assertEqual "intersects" expected . maybe False (const True) $-}
+    {-segmentIntersectsCircle (Line x0 x1) (Circle c r)-}
 
-  , testCase "lineIntersectsCircle 2" $
-      testLineIntersectsCircle False (vector [0,0]) (vector [1,0]) (vector [10,10]) 0.5 
+tests :: TestTree
+tests = unitTests
 
-  -- Test unit circle intersects line y = 0 at (1,0) and (-1,0)
-  , testCase "lineIntersectsCircle 3" $
-      assertEqual "unity" (Just (vector [1.0,0.0], vector[-1.0,0.0])) $ lineIntersectsCircle (Line (vector [0,0]) (vector [1,0]) ) (Circle (vector [0,0]) 1)
+unitTests :: TestTree
+unitTests = testGroup "Geometry Tests"
+  [ testCase "x axis intersects unit circle" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [0,0]) 1
+          result   = lineIntersectsCircle line circle
+          expected = Just $ (vector [1,0], vector [-1,0])
+      in  assertEqual "intersection" expected result
+
+  , testCase "x axis intersects unit circle" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [1,0]) 1
+          result   = lineIntersectsCircle line circle
+          expected = Just $ (vector [2,0], vector [0,0])
+      in  assertEqual "intersection" expected result
+
+  , testCase "x axis intersects unit circle" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [0,1]) 1
+          result   = lineIntersectsCircle line circle
+          expected = Just $ (vector [0,0], vector [0,0])
+      in  assertEqual "intersection" expected result
+
   ]
+
+
+propertyTests :: TestTree
+propertyTests = testGroup "Property-based" []
