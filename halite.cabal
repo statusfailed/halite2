@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Halite, Halite.Types, Halite.Networking
+  exposed-modules:     Halite, Halite.Types, Halite.Networking, Halite.Commands, Halite.Geometry
   build-depends:       base >= 4.7 && < 5, attoparsec, hmatrix, text, lens
   default-language:    Haskell2010
 
@@ -30,6 +30,7 @@ executable halite-exe
 test-suite halite-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
+  exposed-modules:     Halite.Test.Geometry, Halite.Test.Parser,
   main-is:             Main.hs
   build-depends:       base
                      , halite, text, attoparsec, hmatrix

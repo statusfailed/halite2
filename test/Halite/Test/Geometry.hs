@@ -32,14 +32,14 @@ unitTests = testGroup "Geometry Tests"
           expected = Just $ (vector [1,0], vector [-1,0])
       in  assertEqual "intersection" expected result
 
-  , testCase "x axis intersects unit circle" $
+  , testCase "x axis intersects unit circle at (1,0)" $
       let line     = Line   (vector [0,0]) (vector [1,0])
           circle   = Circle (vector [1,0]) 1
           result   = lineIntersectsCircle line circle
           expected = Just $ (vector [2,0], vector [0,0])
       in  assertEqual "intersection" expected result
 
-  , testCase "x axis intersects unit circle" $
+  , testCase "x axis intersects unit circle at (0,1)" $
       let line     = Line   (vector [0,0]) (vector [1,0])
           circle   = Circle (vector [0,1]) 1
           result   = lineIntersectsCircle line circle
