@@ -13,7 +13,7 @@ Currently done:
 - [ ] Geometry
   - [x] `calculateDistanceBetween :: Entity -> Entity -> Double`
   - [x] `lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)`
-  - [ ] `lineSegmentIntersectsCircle`
+  - [x] `segmentIntersectsCircle`
   - [ ] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
 - [ ] Game functions
   - [ ] ship.closestPointTo(entity)

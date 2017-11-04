@@ -39,11 +39,57 @@ unitTests = testGroup "Geometry Tests"
           expected = Just $ (vector [2,0], vector [0,0])
       in  assertEqual "intersection" expected result
 
+  , testCase "x axis intersects unit circle at (10,0)" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [10,0]) 1
+          result   = lineIntersectsCircle line circle
+          expected = Just $ (vector [11,0], vector [9,0])
+      in  assertEqual "intersection" expected result
+
   , testCase "x axis intersects unit circle at (0,1)" $
       let line     = Line   (vector [0,0]) (vector [1,0])
           circle   = Circle (vector [0,1]) 1
           result   = lineIntersectsCircle line circle
           expected = Just $ (vector [0,0], vector [0,0])
+      in  assertEqual "intersection" expected result
+
+  -- Segment tests
+
+  , testCase "x axis segment intersects unit circle" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [0,1]) 1
+          result   = segmentIntersectsCircle line circle
+          expected = Just $ (vector [0,0], vector [0,0])
+      in  assertEqual "intersection" expected result
+
+  , testCase "x axis segment doesn't intersect circle (3,0)" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [3,0]) 1
+          result   = segmentIntersectsCircle line circle
+          expected = Nothing
+      in  assertEqual "intersection" expected result
+
+  , testCase "x axis segment doesn't intersect unit circle" $
+      let line     = Line   (vector [0,0]) (vector [1,0])
+          circle   = Circle (vector [0,2]) 1
+          result   = segmentIntersectsCircle line circle
+          expected = Nothing
+      in  assertEqual "intersection" expected result
+
+  -- NOTE: this fails because of rounding problems. The answer
+  -- is within a very small number.
+  {-, testCase "x=y segment intersects circle @ (2,2) at (1,1)" $-}
+      {-let line     = Line   (vector [0,0]) (vector [1,1])-}
+          {-circle   = Circle (vector [2,2]) (sqrt 2)-}
+          {-result   = segmentIntersectsCircle line circle-}
+          {-expected = Just (vector [3,3], vector [1,1])-}
+      {-in  assertEqual "intersection" expected result-}
+
+  , testCase "x=y segment no intersection with circle (0,2)" $
+      let line     = Line   (vector [0,0]) (vector [1,1])
+          circle   = Circle (vector [0,2]) 1
+          result   = segmentIntersectsCircle line circle
+          expected = Nothing
       in  assertEqual "intersection" expected result
 
   ]

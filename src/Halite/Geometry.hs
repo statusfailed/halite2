@@ -2,6 +2,7 @@ module Halite.Geometry where
 
 import Halite.Types
 import Numeric.LinearAlgebra
+import Control.Applicative
 
 data Line = Line Point Point
   deriving (Eq, Ord, Read, Show)
@@ -33,14 +34,38 @@ lineIntersectsCircle (Line a b) (Circle c r) =
     d  = a + ad
     ab_hat = scale (recip $ norm_2 ab) ab
 
--- TODO Fix broken lineIntersectsCircle
-{-segmentIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)-}
-{-segmentIntersectsCircle line circle@(Circle c r) =-}
-  {-lineIntersectsCircle line circle >>= withinCircle where-}
-    {-withinCircle :: (Point, Point) -> Maybe (Point, Point)-}
-    {-withinCircle (a,b) = if distance c a <= r || distance c b <= r then Just (a, b) else Nothing-}
+-- Let line segment be defined by two points, a and b.
+-- A point p lies on the line if both are true:
+--  1. distance AP < length line
+--  2. distance BP < length line
+onSegment :: Point -> Line -> Bool
+p `onSegment` (Line a b) =
+  distance a p <= lineLength && distance b p <= lineLength
+  where lineLength = distance a b
+        lenAP = distance a p
+        lenBP = distance b p
 
--- | Vector projection of first onto second.
+-- | Does a line *segment* intersect a circular area?
+--
+-- Yes, if:
+--   1. Either endpoint is within the circle
+--   2. Either intersection point of the *line* is on the line *segment*
+segmentIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)
+segmentIntersectsCircle line@(Line a b) circle@(Circle c r) = do
+  (x,y) <- lineIntersectsCircle line circle
+  case withinCircle a || withinCircle b of
+    True  -> return (x,y)
+    False -> hasOneIntersection (x,y)
+
+  where
+    withinCircle :: Point -> Bool
+    withinCircle x = distance c x <= r
+
+    hasOneIntersection :: (Point, Point) -> Maybe (Point, Point)
+    hasOneIntersection (a,b) =
+      if (a `onSegment` line) || (b `onSegment` line) then Just (a, b) else Nothing
+
+-- | Vector projection of first vector onto second.
 -- see https://en.wikipedia.org/wiki/Vector_projection
 projectVector :: Vector R -> Vector R -> Vector R
 projectVector a b = scale a1 bhat
