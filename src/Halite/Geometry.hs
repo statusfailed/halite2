@@ -19,8 +19,8 @@ distance x y = norm_2 (y - x)
 
 -- | Does a 'Line' intersect a 'Circle' in Euclidean space? Note we mean "falls within" the circle
 -- https://stackoverflow.com/a/1079478
-lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)
-lineIntersectsCircle (Line a b) (Circle c r) =
+intersectLineCircle :: Line -> Circle -> Maybe (Point, Point)
+intersectLineCircle (Line a b) (Circle c r) =
   -- if norm_2 cd <= r
   case norm_2 (ad - c) <= r of
     False -> Nothing
@@ -50,9 +50,9 @@ p `onSegment` (Line a b) =
 -- Yes, if:
 --   1. Either endpoint is within the circle
 --   2. Either intersection point of the *line* is on the line *segment*
-segmentIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)
-segmentIntersectsCircle line@(Line a b) circle@(Circle c r) = do
-  (x,y) <- lineIntersectsCircle line circle
+intersectSegmentCircle :: Line -> Circle -> Maybe (Point, Point)
+intersectSegmentCircle line@(Line a b) circle@(Circle c r) = do
+  (x,y) <- intersectLineCircle line circle
   case withinCircle a || withinCircle b of
     True  -> return (x,y)
     False -> hasOneIntersection (x,y)

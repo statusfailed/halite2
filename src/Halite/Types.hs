@@ -49,6 +49,7 @@ data Ship = Ship
   -- _velocity is deprecated
   , _dockingInfo :: DockingInfo
   , _weaponCooldown :: Integer
+  , _radius :: Double
 -- NOTE: lack of docked_planet - this is part of DockingStatus
   } deriving(Eq, Ord, Read, Show)
 
@@ -81,7 +82,9 @@ makeFieldsNoPrefix ''DockingInfo
 makeFieldsNoPrefix ''Planet
 
 -- | Define Entities as things with a Uid, Position, and Health.
-class (HasPos Point t, HasHealth Integer t) => Entity t
+class (HasPos t Point, HasRadius t Double, HasHealth t Integer) => Entity t
+instance Entity Ship
+instance Entity Planet
 
 -- | Useful instance to pick between Either Planet Ship
 -- TODO: how do we lens over both fields at once?

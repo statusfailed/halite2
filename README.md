@@ -14,7 +14,7 @@ Currently done:
   - [x] `calculateDistanceBetween :: Entity -> Entity -> Double`
   - [x] `lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)`
   - [x] `segmentIntersectsCircle`
-  - [ ] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
+  - [x] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
 - [ ] Game functions
   - [ ] ship.closestPointTo(entity)
   - [ ] ship.navigate(position, speed)

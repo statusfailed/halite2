@@ -105,6 +105,7 @@ ship = do
   _dockingInfo <- parseDockingInfo
   skipSpace
   _weaponCooldown <- decimal
+  _radius <- return 0.5 -- constant
   return Ship{..}
 
 parseOwner :: Parser (Maybe (Id PlayerID))
