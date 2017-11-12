@@ -10,19 +10,20 @@ Currently done:
   - [x] Parsers
   - [x] Tests
   - [x] Commands
-- [ ] Geometry
+- [x] Geometry
   - [x] `calculateDistanceBetween :: Entity -> Entity -> Double`
   - [x] `lineIntersectsCircle :: Line -> Circle -> Maybe (Point, Point)`
   - [x] `segmentIntersectsCircle`
   - [x] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
 - [ ] Game functions
-  - [ ] ship.closestPointTo(entity)
+  - [x] ship.closestPointTo(entity)
   - [ ] ship.navigate(position, speed)
+  - [ ] `ship.can_dock(planetId)` ???
+  - [ ] `ship.dock(planetId)` ???
   - [ ] tests
 - [ ] Framework
   - [ ] StateT Writer (old commands overwritten by new)
-  - [ ] ship.dock(planetId) ???
-  - [ ] entity typeclass?
+  - [x] entity typeclass
 - [ ] Test framework
   - [x] Switch to Tasty
   - [ ] Add SmallCheck tests for geometry

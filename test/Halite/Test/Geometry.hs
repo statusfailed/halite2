@@ -92,6 +92,25 @@ unitTests = testGroup "Geometry Tests"
           expected = Nothing
       in  assertEqual "intersection" expected result
 
+  , testCase "vectorAngle with zero vector is pi/2" $
+      let result = vectorAngle (vector [0,0]) (vector [1,1])
+          expected = pi / 2
+      in  assertEqual "angle" expected result
+
+  , testCase "vectorAngle with axis vectors is pi/2" $
+      let result = vectorAngle (vector [1,0]) (vector [0,1])
+          expected = pi / 2
+      in  assertEqual "angle" expected result
+
+  , testCase "bearing between (1, 0) and (0, 1) is 3pi/4" $
+      let result = bearing (vector [1,0]) (vector [0,1])
+          expected = (3 * pi) / 4
+      in  assertEqual "angle" expected result
+
+  , testCase "bearing between (0, 0) and (-1, -1) is -3pi/4" $
+      let result = bearing (vector [0, 0]) (vector [-1, -1])
+          expected = ((-3) * pi) / 4
+      in  assertEqual "angle" expected result
   ]
 
 
