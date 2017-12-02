@@ -6,8 +6,6 @@ import Halite.Types
 import Data.Attoparsec.Text
 import Control.Monad
 
-import Numeric.LinearAlgebra (Vector(..))
-
 ---------- Useful combinators
 
 lineOf :: Parser a -> Parser a

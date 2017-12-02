@@ -1,8 +1,6 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 module Halite.Commands where
 
-import Numeric.LinearAlgebra
-import Numeric.LinearAlgebra.Data
 import Halite.Types
 
 data Command

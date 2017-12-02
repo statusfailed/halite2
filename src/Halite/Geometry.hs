@@ -1,7 +1,8 @@
 module Halite.Geometry where
 
 import Halite.Types
-import Numeric.LinearAlgebra
+import Linear.Metric (norm, dot)
+import Linear.Vector ((*^))
 import Control.Applicative
 
 data Line = Line Point Point
@@ -9,6 +10,8 @@ data Line = Line Point Point
 
 data Circle = Circle Point Double
   deriving (Eq, Ord, Read, Show)
+
+norm_2 = norm
 
 -- | Distance between two points (2-norm)
 --
@@ -24,7 +27,7 @@ intersectLineCircle (Line a b) (Circle c r) =
   -- if norm_2 cd <= r
   case norm_2 (ad - c) <= r of
     False -> Nothing
-    True  -> Just (d + scale dx ab_hat, d - scale dx ab_hat) -- move along ab vector by dx amount
+    True  -> Just (d + dx *^ ab_hat, d - dx *^ ab_hat) -- move along ab vector by dx amount
   where
     ac = c - a
     ab = b - a
@@ -32,7 +35,7 @@ intersectLineCircle (Line a b) (Circle c r) =
     cd = negate ac + ad -- go from C to A to D
     dx = sqrt (r**2 - norm_2 cd) -- intersection point
     d  = a + ad
-    ab_hat = scale (recip $ norm_2 ab) ab
+    ab_hat = (recip $ norm_2 ab) *^ ab
 
 -- Let line segment be defined by two points, a and b.
 -- A point p lies on the line if both are true:
@@ -67,7 +70,7 @@ intersectSegmentCircle line@(Line a b) circle@(Circle c r) = do
 
 -- | Vector projection of first vector onto second.
 -- see https://en.wikipedia.org/wiki/Vector_projection
-projectVector :: Vector R -> Vector R -> Vector R
-projectVector a b = scale a1 bhat
+projectVector :: Vector Double -> Vector Double -> Vector Double
+projectVector a b = a1 *^ bhat
   where a1   = dot a bhat
-        bhat = scale (recip $ norm_2 b) b
+        bhat = (recip $ norm_2 b) *^ b

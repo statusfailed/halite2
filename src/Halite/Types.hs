@@ -6,8 +6,7 @@
 {-# LANGUAGE FlexibleContexts       #-}
 module Halite.Types where
 
-import Numeric.LinearAlgebra
-import Numeric.LinearAlgebra.Data
+import Linear.V2
 import Control.Lens
 import Control.Lens.Prism
 
@@ -20,13 +19,12 @@ data PlayerID
 data ShipID
 data PlanetID
 
-type Point = Vector Double
-
-vector = undefined
+type Vector = V2
+type Point  = Vector Double
 
 -- | Wrapper so we can easily change the underlying type later
 vec :: Double -> Double -> Point
-vec x y = Numeric.LinearAlgebra.vector [x, y]
+vec = Linear.V2.V2
 
 data Init = Init
   { _playerId :: Id PlayerID

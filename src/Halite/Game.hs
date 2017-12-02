@@ -1,7 +1,8 @@
 {-# LANGUAGE FlexibleContexts #-}
 module Halite.Game where
 
-import Numeric.LinearAlgebra
+import Linear (dot, V2(..), (^-^))
+
 import Halite.Types
 import Halite.Geometry
 import Halite.Commands
@@ -23,17 +24,14 @@ obstaclesBetween gameMap x y = allShips ++ allPlanets
 
 vectorAngle :: Point -> Point -> Double
 vectorAngle x y = -- note: zero vector angle is defined as pi/2 radians
-  case sumElements x == 0 || sumElements y == 0 of
+  case sum x == 0 || sum y == 0 of
     True  -> pi/2
     False -> acos $ dot x y / (norm_2 x * norm_2 y) 
 
 -- | Bearing of first point to second, relative to x axis.
 bearing :: Point -> Point -> Double
-bearing a b =
-  case size c of
-    2 -> atan2 (atIndex c 1) (atIndex c 0)
-    _ -> error "bearing used on non-2D vector" -- gross.
-  where c = b - a
+bearing a b = atan2 y x
+  where (V2 x y) = b ^-^ a
 
 calculateAngleBetween :: (HasPos t Point, HasPos u Point) => t -> u -> Double
 calculateAngleBetween t u = vectorAngle (t ^. pos) (u ^. pos)
