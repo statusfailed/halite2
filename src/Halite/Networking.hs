@@ -6,7 +6,7 @@ import Halite.Types
 import Data.Attoparsec.Text
 import Control.Monad
 
-import Numeric.LinearAlgebra (Vector(..), vector)
+import Numeric.LinearAlgebra (Vector(..))
 
 ---------- Useful combinators
 
@@ -90,7 +90,7 @@ parsePos = do
   x <- double
   skipSpace
   y <- double
-  return $ vector [x, y]
+  return $ vec x y
 
 ship :: Parser Ship
 ship = do

@@ -7,7 +7,6 @@ import Data.Attoparsec.Text
 
 import Test.Tasty
 import Test.Tasty.HUnit
-import Numeric.LinearAlgebra (vector)
 
 assertDoneWith :: Show r => (r -> IO a) -> Parser r -> Text -> Assertion
 assertDoneWith f p t = do
@@ -48,7 +47,7 @@ tests = testGroup "Parser Tests"
       assertDoneWith (assertEqual "pdi" (Docking (Id 314) 0)) (lineOf parseDockingInfo) "1 314 0\n"
 
   , testCase "parse pos" $
-      assertDoneWith (assertEqual "pos" $ vector [60.0, 80.0]) (lineOf parsePos) "60.0000 80.0000\n"
+      assertDoneWith (assertEqual "pos" $ vec 60.0 80.0) (lineOf parsePos) "60.0000 80.0000\n"
 
   , testCase "parse ship" $
       assertDone (lineOf ship) "0 60.0000 80.0000 255 0.0000 0.0000 0 0 0 0\n"

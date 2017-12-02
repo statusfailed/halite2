@@ -35,9 +35,6 @@ bearing a b =
     _ -> error "bearing used on non-2D vector" -- gross.
   where c = b - a
 
-bearingDegrees :: Point -> Point -> Integer
-bearingDegrees a b = round (bearing a b / (2 * pi)) `mod` 360
-
 calculateAngleBetween :: (HasPos t Point, HasPos u Point) => t -> u -> Double
 calculateAngleBetween t u = vectorAngle (t ^. pos) (u ^. pos)
 
@@ -54,6 +51,9 @@ radiansToDegrees theta = 360 * theta / (2*pi)
 
 radiansToGame :: Double -> Integer
 radiansToGame = (`mod` 360) . round . radiansToDegrees
+
+bearingGame :: Point -> Point -> Integer
+bearingGame a b = radiansToGame (bearing a b)
 
 -- self, target, map, speed
 {-navigateTo-}

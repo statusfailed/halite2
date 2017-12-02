@@ -22,6 +22,12 @@ data PlanetID
 
 type Point = Vector Double
 
+vector = undefined
+
+-- | Wrapper so we can easily change the underlying type later
+vec :: Double -> Double -> Point
+vec x y = Numeric.LinearAlgebra.vector [x, y]
+
 data Init = Init
   { _playerId :: Id PlayerID
   , _width    :: Integer
