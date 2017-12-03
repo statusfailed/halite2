@@ -17,8 +17,9 @@ Currently done:
   - [x] `obstaclesBetween :: GameMap -> Entity -> Entity -> [Entity]`
 - [ ] Game functions
   - [x] ship.closestPointTo(entity)
-  - [ ] ship.navigate(position, speed)
-  - [ ] `ship.can_dock(planetId)` ???
+  - [x] ship.navigate(position, speed)
+  - [ ] `navigateTo` tests
+  - [x] `ship.can_dock(planetId)` ???
   - [ ] `ship.dock(planetId)` ???
   - [ ] tests
 - [ ] Framework

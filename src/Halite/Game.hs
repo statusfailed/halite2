@@ -46,3 +46,8 @@ closestPointTo x c@(Circle y r) =
     True  -> a
     False -> b
   where (a,b) = maybe (x,x) id $ intersectSegmentCircle (Line x y) c
+
+-- | Can a ship dock with a planet?
+canDock :: Ship -> Planet -> Bool
+canDock ship planet =
+  distance (ship^.pos) (planet^.pos) < planet^.radius + dockRadius

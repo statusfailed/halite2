@@ -15,6 +15,10 @@ import Linear.V2
 import Control.Lens
 import Control.Lens.Prism
 
+-- | Dock radius constant
+dockRadius :: Double
+dockRadius = 4.0
+
 -- | A general ID type
 newtype Id t = Id { unId :: Integer }
   deriving(Eq, Ord, Read, Show)
