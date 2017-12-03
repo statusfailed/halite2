@@ -47,6 +47,11 @@ closestPointTo x c@(Circle y r) =
     False -> b
   where (a,b) = maybe (x,x) id $ intersectSegmentCircle (Line x y) c
 
+-- | Closest docking point to a planet from a given point.
+closestDockingPoint :: Point -> Planet -> Point
+closestDockingPoint x planet = closestPointTo x circle
+  where circle = Circle (planet^.pos) (planet^.radius + dockRadius)
+
 -- | Can a ship dock with a planet?
 canDock :: Ship -> Planet -> Bool
 canDock ship planet =

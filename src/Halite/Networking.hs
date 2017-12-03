@@ -35,7 +35,7 @@ list p = do
 
 ---------- Actual parsers
 
--- | Parse an identifie
+-- | Parse an identifier
 parseUid :: Parser (Id t)
 parseUid = Id <$> decimal
 

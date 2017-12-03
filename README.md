@@ -19,8 +19,8 @@ Currently done:
   - [x] ship.closestPointTo(entity)
   - [x] ship.navigate(position, speed)
   - [ ] `navigateTo` tests
-  - [x] `ship.can_dock(planetId)` ???
-  - [ ] `ship.dock(planetId)` ???
+  - [x] `ship.can_dock(planetId)`
+  - [x] `ship.dock(planetId)`
   - [ ] tests
 - [ ] Framework
   - [ ] StateT Writer (old commands overwritten by new)
