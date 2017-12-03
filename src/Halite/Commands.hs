@@ -4,7 +4,8 @@ module Halite.Commands where
 import Halite.Types
 
 data Command
-  = Move   (Id ShipID) Integer Integer -- ^ Ship ID, speed, angle (degrees)
+  = Move   (Id ShipID) Integer GameAngle
+  -- ^ Ship ID, speed, angle (degrees)
   | Dock   (Id ShipID) (Id PlanetID)
   | Undock (Id ShipID)
   deriving(Eq, Ord, Read, Show)

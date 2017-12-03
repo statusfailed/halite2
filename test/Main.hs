@@ -11,7 +11,6 @@ import qualified Halite.Test.Geometry as Geometry
 
 import Data.Text (Text(..))
 import Data.Attoparsec.Text
-import Numeric.LinearAlgebra (vector)
 
 -- see example code:
 -- https://github.com/ocharles/blog/blob/master/code/2013-12-03-tasty-example.hs

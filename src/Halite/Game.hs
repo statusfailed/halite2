@@ -29,9 +29,12 @@ vectorAngle x y = -- note: zero vector angle is defined as pi/2 radians
     False -> acos $ dot x y / (norm_2 x * norm_2 y) 
 
 -- | Bearing of first point to second, relative to x axis.
-bearing :: Point -> Point -> Double
-bearing a b = atan2 y x
+bearing :: Point -> Point -> Radians Double
+bearing a b = Radians $ atan2 y x
   where (V2 x y) = b ^-^ a
+
+bearingGame :: Point -> Point -> GameAngle
+bearingGame a b = toGameAngle (bearing a b)
 
 calculateAngleBetween :: (HasPos t Point, HasPos u Point) => t -> u -> Double
 calculateAngleBetween t u = vectorAngle (t ^. pos) (u ^. pos)
@@ -43,28 +46,3 @@ closestPointTo x c@(Circle y r) =
     True  -> a
     False -> b
   where (a,b) = maybe (x,x) id $ intersectSegmentCircle (Line x y) c
-
-radiansToDegrees :: Double -> Double
-radiansToDegrees theta = 360 * theta / (2*pi)
-
-radiansToGame :: Double -> Integer
-radiansToGame = (`mod` 360) . round . radiansToDegrees
-
-bearingGame :: Point -> Point -> Integer
-bearingGame a b = radiansToGame (bearing a b)
-
--- self, target, map, speed
-{-navigateTo-}
-  {-:: GameMap-}
-  {--> Integer -- ^ Speed-}
-  {--> Ship    -- ^ Ship to move-}
-  {--> Point   -- ^ Target to move to-}
-  {--> Maybe Command-}
-{-navigateTo gameMap speed ship target =-}
-  {-case obstacles of-}
-    {-[] -> Move (ship ^. id) -}
-    {-_  -> navigateTo gameMap speed ship target'-}
-  {-where-}
-    {-angle     = vectorAngle (ship ^. pos) target-}
-    {-obstacles = obstaclesBetween (ship ^. pos) target-}
-    {-target'   = undefined-}

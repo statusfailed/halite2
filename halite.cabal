@@ -15,8 +15,17 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Halite, Halite.Types, Halite.Networking, Halite.Commands, Halite.Geometry, Halite.Game
-  build-depends:       base >= 4.7 && < 5, attoparsec, text, lens, linear
+  exposed-modules:     Halite
+                     , Halite.Types
+                     , Halite.Angle
+                     , Halite.Networking
+                     , Halite.Commands
+                     , Halite.Geometry
+                     , Halite.Game
+                     , Halite.Starter
+  build-depends:       base >= 4.7 && < 5, attoparsec, text
+                     , lens
+                     , linear
   default-language:    Haskell2010
 
 executable halite-exe

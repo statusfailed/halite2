@@ -4,14 +4,19 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FlexibleContexts       #-}
-module Halite.Types where
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+module Halite.Types
+  ( module Halite.Types
+  , module Halite.Angle
+  )where
 
+import Halite.Angle
 import Linear.V2
 import Control.Lens
 import Control.Lens.Prism
 
 -- | A general ID type
-data Id t = Id { unId :: Integer }
+newtype Id t = Id { unId :: Integer }
   deriving(Eq, Ord, Read, Show)
 
 -- types of ID
