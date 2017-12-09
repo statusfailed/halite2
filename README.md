@@ -25,6 +25,7 @@ Currently done:
 - [ ] Framework
   - [ ] StateT Writer monad for writing bots?
   - [x] entity typeclass
+  - [ ] sanitize bot name, otherwise it might break networking
 - [ ] Test framework
   - [x] Switch to Tasty
   - [ ] Add SmallCheck tests for geometry

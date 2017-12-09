@@ -11,6 +11,6 @@ data Command
   deriving(Eq, Ord, Read, Show)
 
 encodeCommand :: Command -> String
-encodeCommand (Move (Id i) speed angle) = "t " ++ show i ++ " " ++ show speed ++ " " ++ show angle
-encodeCommand (Dock ship planet) = "d " ++ show ship ++ " " ++ show planet
-encodeCommand (Undock ship) = "u " ++ show ship
+encodeCommand (Move (Id i) speed angle) = "t " ++ show i ++ " " ++ show speed ++ " " ++ (show . unGameAngle) angle
+encodeCommand (Dock (Id ship) (Id planet)) = "d " ++ show ship ++ " " ++ show planet
+encodeCommand (Undock (Id ship)) = "u " ++ show ship

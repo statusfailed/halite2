@@ -6,8 +6,10 @@ import Halite
 import Control.Monad
 import Control.Lens
 import Data.Maybe
+import System.IO
 
--- | Try 
+-- | Try to dock with a planet if within its radius.
+-- Otherwise, navigate to the closest point to it.
 dockWith :: GameMap -> Ship -> Planet -> Maybe Command
 dockWith gameMap ship planet = do
   owner <- planet ^. owner
@@ -35,9 +37,8 @@ settler header gameMap =
 type Bot = Header -> GameMap -> [Command]
 
 -- | run a bot in a loop, given an initial msg and game map
-botLoop :: Bot -> Header -> IO ()
-botLoop bot header = do
-  gameMap <- recvGameMap
+botLoop :: GameMap -> Bot -> Header -> IO ()
+botLoop gameMap bot header = do
   let commands = bot header gameMap
 
   -- Write commands
@@ -46,13 +47,20 @@ botLoop bot header = do
   putStrLn ""
 
   -- Loop
-  botLoop bot header
+  gameMap <- recvGameMap
+  botLoop gameMap bot header
 
 -- | Run a bot communicating on stdio
-runBot :: Bot -> IO ()
-runBot bot = do
+-- TODO: strip any newlines from 'name', otherwise it will break :D
+runBot :: String -> Bot -> IO ()
+runBot name bot = do
   header <- recvHeader
-  botLoop bot header
+  gameMap <- recvGameMap
+  putStrLn name
+  botLoop gameMap bot header
 
 main :: IO ()
-main = runBot settler
+main = do
+  hSetBuffering stdout LineBuffering
+  hSetBuffering stderr LineBuffering
+  runBot "Settler" settler
