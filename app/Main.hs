@@ -32,10 +32,12 @@ settler init gameMap =
     undockedShips = filter isUndocked myShips
     isUndocked s = s^.dockingInfo == Undocked
 
--- | Main loop, wrapping settler bot.
-mainLoop :: Init -> GameMap -> IO ()
-mainLoop init gameMap = do
-  let commands = settler init gameMap
+type Bot = Init -> GameMap -> [Command]
+
+-- | run a bot in a loop, given an initial msg and game map
+botLoop :: Bot -> Init -> GameMap -> IO ()
+botLoop bot init gameMap = do
+  let commands = bot init gameMap
 
   -- Write commands
   forM_ commands $ \c -> do
@@ -43,11 +45,11 @@ mainLoop init gameMap = do
   putStrLn ""
 
   gameMap <- undefined
-  mainLoop init gameMap
+  runBot bot init gameMap
 
-{-main :: IO ()-}
-{-main = do-}
-  {-init <- undefined -- TODO: run parser on stdin?-}
-  {-mainLoop init (init ^. gameMap)-}
+runBot :: Bot -> IO ()
+runBot = do
+  init <- undefined -- TODO: run parser on stdin?
+  mainLoop init (init ^. gameMap)
 
 main = print 0

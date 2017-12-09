@@ -23,7 +23,7 @@ Currently done:
   - [x] `ship.dock(planetId)`
   - [ ] tests
 - [ ] Framework
-  - [ ] StateT Writer (old commands overwritten by new)
+  - [ ] StateT Writer monad for writing bots?
   - [x] entity typeclass
 - [ ] Test framework
   - [x] Switch to Tasty

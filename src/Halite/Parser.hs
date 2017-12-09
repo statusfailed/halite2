@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards        #-}
 {-# LANGUAGE DuplicateRecordFields  #-}
-module Halite.Networking where
+module Halite.Parser where
 
 import Halite.Types
 import Data.Attoparsec.Text
