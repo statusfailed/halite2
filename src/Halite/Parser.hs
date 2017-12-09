@@ -39,25 +39,22 @@ list p = do
 parseUid :: Parser (Id t)
 parseUid = Id <$> decimal
 
+parseWidthHeight :: Parser (Integer, Integer)
+parseWidthHeight = do
+  w  <- decimal
+  skipSpace
+  h  <- decimal
+  return (w, h)
+
 -- | Parse player ID, then width and height on own line.
 parseHeader :: Parser (Id PlayerID, Integer, Integer)
 parseHeader = do
   playerId <- lineOf parseUid
-  (width, height) <- lineOf $ do
-    w  <- decimal
-    skipSpace
-    h  <- decimal
-    return (w, h)
+  (width, height) <- lineOf parseWidthHeight
   return (playerId, width, height)
 
-parseInit :: Parser Init
-parseInit = do
-  (_playerId, _width, _height) <- parseHeader
-  _gameMap <- lineOf (skipSpace >> parseGameMap)
-  return Init{..}
-
 parseGameMap :: Parser GameMap
-parseGameMap = do
+parseGameMap = skipSpace >> do
   (_numPlayers, _players) <- list player 
   skipSpace
   (_numPlanets, _planets) <- list planet

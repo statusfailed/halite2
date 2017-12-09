@@ -35,11 +35,10 @@ type Point  = Vector Double
 vec :: Double -> Double -> Point
 vec = Linear.V2.V2
 
-data Init = Init
+data Header = Header
   { _playerId :: Id PlayerID
   , _width    :: Integer
   , _height   :: Integer
-  , _gameMap  :: GameMap
   } deriving(Eq, Ord, Read, Show)
 
 data GameMap = GameMap
@@ -87,7 +86,7 @@ data Planet = Planet
   } deriving(Eq, Ord, Read, Show)
 
 -- Make lenses!
-makeFieldsNoPrefix ''Init
+makeFieldsNoPrefix ''Header
 makeFieldsNoPrefix ''GameMap
 makeFieldsNoPrefix ''Player
 makeFieldsNoPrefix ''Ship

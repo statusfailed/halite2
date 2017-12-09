@@ -22,34 +22,37 @@ processShip gameMap ship =
   msum $ map (dockWith gameMap ship) (gameMap^.planets)
 
 -- | Settler bot, without any monadic machinery
-settler :: Init -> GameMap -> [Command]
-settler init gameMap =
+settler :: Header -> GameMap -> [Command]
+settler header gameMap =
   catMaybes $ map (processShip gameMap) undockedShips
   where
-    myId     = init ^. playerId
+    myId     = header ^. playerId
     myPlayer = (gameMap ^. players) !! fromIntegral (unId myId)
     myShips  = myPlayer ^. ships
     undockedShips = filter isUndocked myShips
     isUndocked s = s^.dockingInfo == Undocked
 
-type Bot = Init -> GameMap -> [Command]
+type Bot = Header -> GameMap -> [Command]
 
 -- | run a bot in a loop, given an initial msg and game map
-botLoop :: Bot -> Init -> GameMap -> IO ()
-botLoop bot init gameMap = do
-  let commands = bot init gameMap
+botLoop :: Bot -> Header -> IO ()
+botLoop bot header = do
+  gameMap <- recvGameMap
+  let commands = bot header gameMap
 
   -- Write commands
   forM_ commands $ \c -> do
     putStr (encodeCommand c ++ " ")
   putStrLn ""
 
-  gameMap <- undefined
-  runBot bot init gameMap
+  -- Loop
+  botLoop bot header
 
+-- | Run a bot communicating on stdio
 runBot :: Bot -> IO ()
-runBot = do
-  init <- undefined -- TODO: run parser on stdin?
-  mainLoop init (init ^. gameMap)
+runBot bot = do
+  header <- recvHeader
+  botLoop bot header
 
-main = print 0
+main :: IO ()
+main = runBot settler

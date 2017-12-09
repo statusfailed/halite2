@@ -18,10 +18,11 @@ library
   exposed-modules:     Halite
                      , Halite.Types
                      , Halite.Angle
-                     , Halite.Networking
+                     , Halite.Parser
                      , Halite.Commands
                      , Halite.Geometry
                      , Halite.Game
+                     , Halite.Networking
                      , Halite.Starter
   build-depends:       base >= 4.7 && < 5, attoparsec, text
                      , lens
