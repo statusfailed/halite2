@@ -52,6 +52,14 @@ unitTests = testGroup "Geometry Tests"
           expected = Just $ (vec 0 0, vec 0 0)
       in  assertEqual "intersection" expected result
 
+  , testCase "intersectLineCircle Line (vec 2 0) (vec 0 0) with Circle (vec 0 0) 1" $
+      let line     = Line   (vec 2 0) (vec 0 0)
+          circle   = Circle (vec 0 0) 1
+          result   = intersectLineCircle line circle
+          expected = Just (vec (-1) 0, vec 1 0)
+      in  assertEqual "intersection" expected result
+
+
   -- Segment tests
 
   , testCase "x axis segment intersects unit circle" $
@@ -91,6 +99,13 @@ unitTests = testGroup "Geometry Tests"
           expected = Nothing
       in  assertEqual "intersection" expected result
 
+  , testCase "intersectSegmentCircle Line (vec 2 0) (vec 0 0) with Circle (vec 0 0) 1" $
+      let line     = Line   (vec 2 0) (vec 0 0)
+          circle   = Circle (vec 0 0) 1
+          result   = intersectSegmentCircle line circle
+          expected = Just (vec (-1) 0, vec 1 0)
+      in  assertEqual "intersection" expected result
+
   , testCase "vectorAngle with zero vector is pi/2" $
       let result = vectorAngle (vec 0 0) (vec 1 1)
           expected = pi / 2
@@ -110,6 +125,21 @@ unitTests = testGroup "Geometry Tests"
       let result = bearing (vec 0  0) (vec (-1)  (-1))
           expected = ((-3) * pi) / 4
       in  assertEqual "angle" expected result
+
+  , testCase "closest point to (0, 0) (Circle (10, 0) 1) == vec 9 0" $
+      let result = closestPointTo (vec 0 0) (Circle (vec 10 0) 1)
+          expected = (vec 9 0)
+      in assertEqual "closestPointTo" expected result
+
+  , testCase "closest point to (0, 0) (Circle (0, 10) 1) == vec 0 9" $
+      let result = closestPointTo (vec 0 0) (Circle (vec 0 10) 1)
+          expected = (vec 0 9)
+      in assertEqual "closestPointTo" expected result
+
+  , testCase "closest point to (10, 0) (Circle (vec 0 0) 4) == vec 4 0" $
+      let result = closestPointTo (vec 10 0) (Circle (vec 0 0) 4)
+          expected = (vec 4 0)
+      in assertEqual "closestPointTo" expected result
   ]
 
 

@@ -15,9 +15,28 @@ import Linear.V2
 import Control.Lens
 import Control.Lens.Prism
 
+import Control.Monad
+import Control.Monad.Reader
+import Control.Monad.State
+import Control.Monad.Writer
+
+-- | A 'HaliteBot' is execution state for a bot
+class
+  ( Monad m
+  , MonadReader GameState m
+  , MonadState  botState m
+  ) => HaliteBot botState m
+
+instance HaliteBot s (ReaderT GameState (State s))
+
+type Bot s a = ReaderT GameState (State s) a
+
 -- | Dock radius constant
 dockRadius :: Double
 dockRadius = 4.0
+
+shipRadius :: Double
+shipRadius = 1.0
 
 -- | A general ID type
 newtype Id t = Id { unId :: Integer }
@@ -46,6 +65,11 @@ data GameMap = GameMap
   , _players    :: [Player]
   , _numPlanets    :: Integer
   , _planets    :: [Planet]
+  } deriving(Eq, Ord, Read, Show)
+
+data GameState = GameState
+  { _header  :: Header
+  , _gameMap :: GameMap
   } deriving(Eq, Ord, Read, Show)
 
 data Player = Player
@@ -92,6 +116,7 @@ makeFieldsNoPrefix ''Player
 makeFieldsNoPrefix ''Ship
 makeFieldsNoPrefix ''DockingInfo
 makeFieldsNoPrefix ''Planet
+makeFieldsNoPrefix ''GameState
 
 -- | Define Entities as things with a Uid, Position, and Health.
 class (HasPos t Point, HasRadius t Double, HasHealth t Integer) => Entity t

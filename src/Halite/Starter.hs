@@ -11,7 +11,8 @@ import Linear.Metric
 import Linear.V2
 import Control.Lens
 
--- self, target, map, speed
+-- | navigate to, with a max number of corrections
+-- TODO: remove target from obstacle entities
 navigateTo'
   :: GameMap
   -> Integer -- ^ Max corrections
@@ -21,15 +22,14 @@ navigateTo'
   -> Maybe Command
 navigateTo' gameMap 0 speed ship target = Nothing
 navigateTo' gameMap maxCorrections speed ship target =
-  case obstacles of
-    [] -> Just $ Move (ship ^. uid) speed (toGameAngle angle)
-    _  -> navigateTo' gameMap maxCorrections' speed ship target
+  case obstaclesBetweenShip gameMap ship target of
+    [] -> Just $ Move (ship ^. uid) trueSpeed (toGameAngle angle)
+    _  -> navigateTo' gameMap (maxCorrections - 1) speed ship newTarget
   where
     dist  = distance target (ship^.pos)
     angle = bearing (ship^.pos) target
-    obstacles = obstaclesBetween gameMap (ship^.pos) newTarget
-    maxCorrections' = maxCorrections - 1
     angularStep = Radians (pi/180) -- approx 1 degree
+    trueSpeed = if dist >= fromIntegral speed then speed else floor dist
 
     dx = cos (unRadians $ angle + angularStep) * dist
     dy = sin (unRadians $ angle + angularStep) * dist

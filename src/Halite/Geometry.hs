@@ -1,7 +1,7 @@
 module Halite.Geometry where
 
 import Halite.Types
-import Linear.Metric (norm, dot)
+import Linear.Metric (norm, dot, distance)
 import Linear.Vector ((*^))
 import Control.Applicative
 
@@ -17,8 +17,8 @@ norm_2 = norm
 --
 -- python:
 -- return math.sqrt((target.x - self.x) ** 2 + (target.y - self.y) ** 2)
-distance :: Point -> Point -> Double
-distance x y = norm_2 (y - x)
+{-distance :: Point -> Point -> Double-}
+{-distance x y = norm_2 (y - x)-}
 
 -- | Does a 'Line' intersect a 'Circle' in Euclidean space? Note we mean "falls within" the circle
 -- https://stackoverflow.com/a/1079478
@@ -76,7 +76,6 @@ projectVector a b = a1 *^ bhat
         bhat = (recip $ norm_2 b) *^ b
 
 -- | Closest point from a point to a circle
--- NOTE: should probably not use intersectSegmentCircle here, not much point!
 closestPointTo :: Point -> Circle -> Point
 closestPointTo x c@(Circle y r) =
   case norm_2 (a - x) < norm_2 (b - x) of

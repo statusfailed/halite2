@@ -1,66 +1,127 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Main where
 
 import Halite
 
+import Data.Function
+import Data.List
+import Data.Maybe
+
 import Control.Monad
 import Control.Lens
-import Data.Maybe
 import System.IO
 
--- | Try to dock with a planet if within its radius.
--- Otherwise, navigate to the closest point to it.
-dockWith :: GameMap -> Ship -> Planet -> Maybe Command
-dockWith gameMap ship planet = do
-  owner <- planet ^. owner
-  case canDock ship planet of
-    True  -> Just $ Dock (ship ^. uid) (planet ^. uid)
-    False -> navigateTo gameMap 7 ship target
-  where target = closestDockingPoint (ship^.pos) planet
+import Control.Monad.State
+import Control.Monad.Reader
 
--- | Process undocked ships
-processShip :: GameMap -> Ship -> Maybe Command
-processShip gameMap ship =
-  msum $ map (dockWith gameMap ship) (gameMap^.planets)
+import Linear
 
--- | Settler bot, without any monadic machinery
-settler :: Header -> GameMap -> [Command]
-settler header gameMap =
-  catMaybes $ map (processShip gameMap) undockedShips
+----------------------------------------------------------------------
+-- Utils -------------------------------------------------------------
+----------------------------------------------------------------------
+
+closestPlanetTo :: HaliteBot s m => Point -> m Planet
+closestPlanetTo point = do
+  planets <- view (gameMap . planets)
+  let planet = minimumBy f planets
+      f p1 p2 = compare (g p1 point) (g p2 point)
+      g p s   = distance (p ^. pos) point
+  return $ minimumBy f planets
+
+dockWithClosestPlanet :: HaliteBot s m => Ship -> m (Maybe Command)
+dockWithClosestPlanet ship = do
+  planet <- closestPlanetTo (ship ^. pos)
+  gm     <- view gameMap
+  let target = closestDockingPoint (ship ^. pos) planet
+      dist    = distance (ship ^. pos) target
+      speed   = 7
+
+  case withinDockingRadius (ship^.pos) planet of
+    False -> return $ navigateTo gm speed ship target
+    True  -> return . Just $ Dock (ship^.uid) (planet^.uid)
+
+dockWith :: HaliteBot s m => Ship -> Planet -> m (Maybe Command)
+dockWith ship planet = do
+  gm <- view gameMap
+  let target = closestDockingPoint (ship ^. pos) planet
+      dist    = distance (ship ^. pos) target
+      speed   = 7
+
+  case withinDockingRadius (ship^.pos) planet of
+    False -> return $ navigateTo gm speed ship target
+    True  -> return . Just $ Dock (ship^.uid) (planet^.uid)
+
+----------------------------------------------------------------------
+-- Bots  -------------------------------------------------------------
+----------------------------------------------------------------------
+
+-- | Settler bot
+settler :: HaliteBot s m => m [Command]
+settler = do
+  myId        <- view (header . playerId)
+  freeShips   <- filter isUndocked <$> myShips
+  freePlanets <- filter isUnowned  <$> view (gameMap.planets)
+  case freePlanets of
+    (p:_) -> catMaybes <$> mapM (flip dockWith p) freeShips
+    []    -> return $ []
+  where f (Id i) = compare `on` (\x -> unId (x^.uid) `mod` (i+1))
+
+-- | DockFastBot just tries to dock ASAP
+dockFastBot :: HaliteBot s m => m [Command]
+dockFastBot  = do
+  planets <- view (gameMap . planets)
+  ships   <- myShips
+  cmds    <- mapM dockWithClosestPlanet ships
+  return $ catMaybes cmds
+
+-- | GreedyBot tries to dock
+greedyBot :: HaliteBot s m => m [Command]
+greedyBot  = do
+  planets <- view (gameMap . planets)
+  ships   <- myShips
+  catMaybes <$> mapM shipCmd ships
   where
-    myId     = header ^. playerId
-    myPlayer = (gameMap ^. players) !! fromIntegral (unId myId)
-    myShips  = myPlayer ^. ships
-    undockedShips = filter isUndocked myShips
-    isUndocked s = s^.dockingInfo == Undocked
+    -- Each ship docks with the closest planet, or does nothing.
+    shipCmd ship = do
+      planets <- view (gameMap . planets)
+      targets <- sortByDistance ship <$> filterM dockable planets
+      case targets of
+        []    -> return Nothing
+        (p:_) -> dockWith ship p
 
-type Bot = Header -> GameMap -> [Command]
+----------------------------------------------------------------------
+-- Plumbing ----------------------------------------------------------
+----------------------------------------------------------------------
 
--- | run a bot in a loop, given an initial msg and game map
-botLoop :: GameMap -> Bot -> Header -> IO ()
-botLoop gameMap bot header = do
-  let commands = bot header gameMap
-
-  -- Write commands
+writeCommands :: [Command] -> IO ()
+writeCommands commands = do
   forM_ commands $ \c -> do
     putStr (encodeCommand c ++ " ")
   putStrLn ""
 
-  -- Loop
-  gameMap <- recvGameMap
-  botLoop gameMap bot header
 
--- | Run a bot communicating on stdio
--- TODO: strip any newlines from 'name', otherwise it will break :D
-runBot :: String -> Bot -> IO ()
+runBotWith :: Header -> GameMap -> s -> Bot s a -> a
+runBotWith hdr gm botState bot
+  = flip evalState botState $ runReaderT bot (GameState hdr gm)
+
+-- | Run a 'HaliteBot'
+runBot :: String -> Bot () [Command] -> IO ()
 runBot name bot = do
-  header <- recvHeader
-  gameMap <- recvGameMap
+  hdr <- recvHeader
+  gm  <- recvGameMap
   putStrLn name
-  botLoop gameMap bot header
+  loop hdr gm
+  where
+    loop :: Header -> GameMap -> IO ()
+    loop hdr gm = do
+      let commands = runBotWith hdr gm () bot
+      writeCommands commands
+      recvGameMap >>= loop hdr
 
 main :: IO ()
 main = do
   hSetBuffering stdout LineBuffering
   hSetBuffering stderr LineBuffering
-  runBot "Settler" settler
+  runBot "HaskellTest" greedyBot

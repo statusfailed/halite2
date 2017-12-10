@@ -22,8 +22,11 @@ Currently done:
   - [x] `ship.can_dock(planetId)`
   - [x] `ship.dock(planetId)`
   - [ ] tests
+  - [ ] What's with all the fudge factors!? (closestDockingPoint and intersectLineEntity)
+  - [ ] Fix broken navigation code (obstacle detection not working - see greedyBot)
 - [ ] Framework
-  - [ ] StateT Writer monad for writing bots?
+  - [x] State/Reader monad for writing bots
+  - [ ] add Writer to monad transformer for logging / commands?
   - [x] entity typeclass
   - [ ] sanitize bot name, otherwise it might break networking
 - [ ] Test framework

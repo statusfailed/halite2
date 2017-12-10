@@ -27,6 +27,7 @@ library
   build-depends:       base >= 4.7 && < 5, attoparsec, text
                      , lens
                      , linear
+                     , mtl
   default-language:    Haskell2010
 
 executable halite-exe
@@ -36,6 +37,8 @@ executable halite-exe
   build-depends:       base
                      , halite
                      , lens
+                     , mtl
+                     , linear
   default-language:    Haskell2010
 
 test-suite halite-test
