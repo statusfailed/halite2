@@ -25,7 +25,7 @@ distance x y = norm_2 (y - x)
 intersectLineCircle :: Line -> Circle -> Maybe (Point, Point)
 intersectLineCircle (Line a b) (Circle c r) =
   -- if norm_2 cd <= r
-  case norm_2 (ad - c) <= r of
+  case norm_2 (d - c) <= r of
     False -> Nothing
     True  -> Just (d + dx *^ ab_hat, d - dx *^ ab_hat) -- move along ab vector by dx amount
   where
@@ -74,3 +74,12 @@ projectVector :: Vector Double -> Vector Double -> Vector Double
 projectVector a b = a1 *^ bhat
   where a1   = dot a bhat
         bhat = (recip $ norm_2 b) *^ b
+
+-- | Closest point from a point to a circle
+-- NOTE: should probably not use intersectSegmentCircle here, not much point!
+closestPointTo :: Point -> Circle -> Point
+closestPointTo x c@(Circle y r) =
+  case norm_2 (a - x) < norm_2 (b - x) of
+    True  -> a
+    False -> b
+  where (a,b) = maybe (x,x) id $ intersectSegmentCircle (Line x y) c
