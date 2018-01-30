@@ -2,7 +2,7 @@ name:                halite
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/statusfailed/hs-halite
+homepage:            https://github.com/statusfailed/halite2
 license:             BSD3
 license-file:        LICENSE
 author:              Paul Wilson
@@ -55,4 +55,4 @@ test-suite halite-test
 
 source-repository head
   type:     git
-  location: https://github.com/statusfailed/halite
+  location: https://github.com/statusfailed/halite2
